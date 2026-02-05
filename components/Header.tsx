@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShoppingCart } from '@phosphor-icons/react';
@@ -16,10 +17,12 @@ const formatCurrency = (amount: number): string => {
 };
 
 const Header: React.FC = () => {
-  const { cartItems } = useCart();
+  const pathname = usePathname();
+  const { cartItems, getPreviewPrice, getTotalPrice } = useCart();
   
-  // Get the base price from cart (only one item allowed)
-  const cartPrice = cartItems.length > 0 ? cartItems[0].monthlyPrice : 0;
+  // On /plans page, show preview price; on other pages, show committed cart price
+  const isPlansPage = pathname === '/plans';
+  const cartPrice = isPlansPage ? getPreviewPrice() : getTotalPrice();
   const displayPrice = cartPrice > 0 ? formatCurrency(cartPrice) : '$0.00';
 
   return (

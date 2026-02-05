@@ -24,13 +24,18 @@ const CartPage = () => {
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'AUD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
   };
 
-  const basePrice = selectedItem ? selectedItem.monthlyPrice : 0;
+  // Use totalAnnualPrice if annual, monthlyPrice if monthly
+  const basePrice = selectedItem 
+    ? (selectedItem.billingType === 'annual' 
+        ? selectedItem.totalAnnualPrice 
+        : selectedItem.monthlyPrice)
+    : 0;
   const gstAmount = basePrice * 0.1; // 10% GST
   const totalAmount = basePrice + gstAmount;
 

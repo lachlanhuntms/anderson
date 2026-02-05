@@ -22,7 +22,7 @@ export const products: Product[] = [
     monthlyPrice: 240,
     totalMonthlyPrice: 2880,
     totalMonthlySavings: 3420,
-    totalAnnualPrice: 540,
+    totalAnnualPrice: 5400,
   },
   {
     id: 3,

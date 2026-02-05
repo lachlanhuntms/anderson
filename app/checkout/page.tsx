@@ -15,7 +15,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'AUD',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
@@ -66,7 +66,7 @@ interface CheckoutPageContentProps {
 
 const CheckoutPageContent: React.FC<CheckoutPageContentProps> = ({ clientSecret }) => {
   const router = useRouter();
-  const { cartItems, clearCart } = useCart();
+  const { cartItems, clearCart, setShowSuccess } = useCart();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -86,7 +86,12 @@ const CheckoutPageContent: React.FC<CheckoutPageContentProps> = ({ clientSecret 
   const selectedItem = cartItems.length > 0 ? cartItems[0] : null;
 
   // Calculate pricing dynamically from cart context
-  const basePrice = selectedItem ? selectedItem.monthlyPrice : 0;
+  // Use totalAnnualPrice if annual, monthlyPrice if monthly
+  const basePrice = selectedItem 
+    ? (selectedItem.billingType === 'annual' 
+        ? selectedItem.totalAnnualPrice 
+        : selectedItem.monthlyPrice)
+    : 0;
   const gstAmount = basePrice * 0.1; // 10% GST
   const totalAmount = basePrice + gstAmount;
 
@@ -160,8 +165,9 @@ const CheckoutPageContent: React.FC<CheckoutPageContentProps> = ({ clientSecret 
         console.error('Payment error:', error);
         setIsProcessing(false);
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        // Clear cart and redirect to plans page
+        // Clear cart, set success state, and redirect to plans page
         clearCart();
+        setShowSuccess(true);
         router.push('/plans');
       }
     } catch (err) {
@@ -227,7 +233,12 @@ const CheckoutPage = () => {
   const selectedItem = cartItems.length > 0 ? cartItems[0] : null;
 
   // Calculate pricing dynamically from cart context
-  const basePrice = selectedItem ? selectedItem.monthlyPrice : 0;
+  // Use totalAnnualPrice if annual, monthlyPrice if monthly
+  const basePrice = selectedItem 
+    ? (selectedItem.billingType === 'annual' 
+        ? selectedItem.totalAnnualPrice 
+        : selectedItem.monthlyPrice)
+    : 0;
   const gstAmount = basePrice * 0.1; // 10% GST
   const totalAmount = basePrice + gstAmount;
 

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PlanSlide from './PlanSlide';
+import { useCart } from '../contexts/CartContext';
 
 interface Product {
   id: number;
@@ -18,6 +19,20 @@ interface MembershipPlansCarouselProps {
 
 const MembershipPlansCarousel: React.FC<MembershipPlansCarouselProps> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { updatePreview } = useCart();
+
+  // Initialize preview with first product (monthly) on mount
+  useEffect(() => {
+    if (products.length > 0) {
+      updatePreview({
+        productId: products[0].id,
+        productName: products[0].name,
+        monthlyPrice: products[0].monthlyPrice,
+        totalAnnualPrice: products[0].totalAnnualPrice,
+        billingType: 'monthly',
+      });
+    }
+  }, []); // Only run on mount
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>

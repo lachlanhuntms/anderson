@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '../contexts/CartContext';
 
@@ -31,15 +31,22 @@ const formatCurrency = (amount: number): string => {
 const PlanSlide: React.FC<PlanSlideProps> = ({ product, onPrevSlide, onNextSlide }) => {
   const [selectedPaymentOption, setSelectedPaymentOption] = useState<'monthly' | 'annual'>('monthly');
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { updatePreview, commitPreview } = useCart();
 
-  const handlePurchase = () => {
-    addToCart({
+  // Update preview automatically when product or billing option changes
+  useEffect(() => {
+    updatePreview({
       productId: product.id,
       productName: product.name,
       monthlyPrice: product.monthlyPrice,
+      totalAnnualPrice: product.totalAnnualPrice,
       billingType: selectedPaymentOption,
     });
+  }, [product.id, product.name, product.monthlyPrice, product.totalAnnualPrice, selectedPaymentOption, updatePreview]);
+
+  const handlePurchase = () => {
+    // Commit preview to cart and navigate
+    commitPreview();
     router.push('/cart');
   };
 
