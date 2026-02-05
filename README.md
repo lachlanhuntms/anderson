@@ -24,6 +24,19 @@ Stripe keys will be provided separately.
 
 ---
 
+---
+
+## Fonts & Colours
+- Import Work Sans from Google Fonts and use across the whole site
+- Colour codes are as follows:
+  - Nav Background/Brand Color: `#022a25`
+  - Membership Bar on Carousel:
+    - Bronze: `#f59e0b`
+    - Silver: `#cbd5e1`
+    - Gold: `#fde047`
+
+---
+
 ## Provided data (single source of truth)
 
 Use this array to render plan names and prices. This must be the only source of pricing data.
@@ -69,7 +82,7 @@ export const products: Product[] = [
 
 ## Core requirement
 
-Build a carousel that displays **one plan at a time** and allows switching between plans using **left/right navigation arrows** (like the screenshot).
+Build a carousel that displays **one plan at a time** and allows switching between plans using **left/right navigation arrows** (like the Plan Screen screenshot).
 
 The carousel must be:
 
@@ -124,7 +137,7 @@ These values must come from the `Product` fields (not hardcoded) and must be for
 
 ## UI structure per slide
 
-Each slide should visually follow the screenshot.
+Each slide should visually follow the Plan Screen screenshot.
 
 ### Left column — Membership Information
 
@@ -176,17 +189,13 @@ All money values must:
 
 ---
 
-# Navigation Bar + Cart
+# Cart button in Navigation
 
 ## Requirement
 
-Implement a **global navigation bar** that is visible across the app.
+A global navigation bar has been created for you in the template file. Add the functionality to this button to update with the Monthly Price for the product the user selects when they click the "Purchase Memebership" button at the bottom of the page.
 
-The navigation bar must include:
-
-- Logo / site name (static)  
-- Link to Membership Plans page  
-- Cart icon / Cart section  
+Follow the Cart Behaviour instructions below
 
 ---
 
@@ -227,7 +236,7 @@ The same state should be used for:
 ## UI requirements
 
 - Cart should be visible in the navbar at all times  
-- Cart should clearly show the current price  
+- Cart should clearly show the current Monthly Price  
 - If no membership is selected:
   - Cart should show an empty state (e.g. “No plan selected”)
 
@@ -240,9 +249,8 @@ The same state should be used for:
 
 ---
 
-## Acceptance Checklist — Navbar & Cart
+## Acceptance Checklist — Navbar Cart Button
 
-- [ ] Navbar exists on all pages  
 - [ ] Cart displays selected membership  
 - [ ] Cart displays correct price  
 - [ ] Cart persists across page navigation  
@@ -251,49 +259,104 @@ The same state should be used for:
 
 ---
 
-# Part B — Cart / Checkout Page (`/checkout`)
+# Part B — Cart Page (`/cart`)
 
-This page should visually resemble the provided cart/checkout screenshot.
+This page represents a **pre-checkout cart summary** where the user reviews their membership before proceeding to the full checkout.
+
+---
 
 ## Requirement
 
-Create a route at **`/checkout`** that represents the final cart and checkout flow after a membership is selected.
-
-This page acts as **both cart summary and checkout form**.
+This page acts as a **cart review step only** (no payment processing here).
 
 The selected membership and billing option must be available on this page via state management.
 
 ---
 
-## Checkout page structure
+## Cart page structure
 
-### Section 1 — Membership Summary (Right side)
+### Section 1 — Membership Summary
 
-Display:
+Ensure the Cart page displays the following product values from the user's selected product via state (values required will be indicated in the comments on the page which you will be required to map correctly and display via state):
 
 - Selected plan name  
 - Selected billing type (Monthly / Annual)  
 - Base price (ex GST)  
-- GST amount (you can assume 10%)  
+- GST amount (assume 10%)  
 - Final total to pay today  
 
-This data must come from the same state as the carousel/cart.
+This data must come from the same state as the carousel selection.
 
 ---
 
-### Section 2 — Customer Details Form (Left side)
+### Section 2 — Terms & Conditions
 
-Form fields (minimum, based on screenshot):
+- Checkbox:  
+  “I have read and agree to the Terms & Conditions of this membership.”
+- The **Proceed to Checkout** button must be disabled until this is checked.
 
-- Company name  
-- First name  
-- Last name  
-- Email  
-- Mobile number  
-- Business address  
-- Country  
+---
 
-All fields should be controlled inputs.
+### Section 3 — Proceed to Checkout
+
+- Button: **“Proceed to Checkout”**
+- Navigates to `/checkout`
+
+---
+
+## Acceptance Checklist — Cart Page
+
+- [ ] Displays selected membership  
+- [ ] Shows correct pricing + GST  
+- [ ] Terms checkbox required to continue  
+- [ ] Button navigates to `/checkout`  
+- [ ] No Stripe logic on this page  
+
+---
+
+# Part C — Checkout Page (`/checkout`)
+
+This is the **final payment step**.
+
+---
+
+## Requirement
+
+Create a route at **`/checkout`** that contains:
+
+- Customer details form
+- Membership summary
+- Stripe payment form
+
+This page performs the **actual Stripe payment**.
+
+---
+
+## Checkout page structure
+
+### Section 1 — Customer Details Form (Left side)
+
+All required form fields have been created for you.
+
+All fields must be **controlled inputs**.
+
+Basic validation required:
+- Required fields must be filled
+- Email must be valid format
+
+---
+
+### Section 2 — Membership Summary (Right side)
+
+Ensure the Checkout page displays the following product values from the user's selected product via state (Values required will be indicated in the comments on the page which you will be required to map correctly and display via state):
+
+- Selected plan name  
+- Selected billing type (Monthly / Annual)  
+- Base price (ex GST)  
+- GST amount (10%)  
+- Final total to pay today  
+
+Must use the **same state** as the cart page.
 
 ---
 
@@ -305,38 +368,68 @@ Integrate **Stripe Elements** to collect card details:
 - Expiry  
 - CVC  
 
-Do **not** build your own card input fields.
+Do **not** build custom card inputs.
 
-The card UI should visually fit into the checkout layout like the screenshot.
+Use official Stripe Elements components.
 
 ---
 
-# Stripe Integration (Required)
+## Stripe Integration (Required)
 
-This must be a real Stripe integration using:
+This must be a **real Stripe integration** using:
 
 - Stripe SDK  
-- Stripe Elements on the frontend  
-- Next.js API routes on the backend  
+- Stripe Elements (frontend)  
+- Next.js API routes (backend)  
+
+Stripe keys will be provided separately.
 
 ---
+
+## Stripe Test Keys & Testing
+
+You will be provided with **Stripe test API keys** separately.
+
+These keys should be used for all development and testing.  
+**Do not use real/live Stripe keys.**
+
+---
+
+### Test card details
+
+When testing payments with Stripe, you may use the following test card:
+
+**Card number:** `4242 4242 4242 4242`  
+**Expiry:** Any future date (e.g. `12/34`)  
+**CVC:** Any 3 digits (e.g. `123`)  
+**ZIP / Postal code:** Any valid value
+
+This card should always result in a **successful test payment**.
+
+---
+
+### Notes
+
+- All payments must be made in **Stripe test mode**
+- No real money will be charged
+- The success state should be handled exactly the same way as a real payment
+- Do not commit Stripe keys to the repository (use environment variables)
+
 
 ## Backend (Next.js API route)
 
 Create an API route such as:
-`POST /api/create-payment-intent`
 
+`POST /api/create-payment-intent`
 
 This route should:
 
 Receive:
-
 - Selected product  
 - Billing type  
 - Final price (including GST)  
 
 Then:
-
 - Create a Stripe PaymentIntent  
 - Return `client_secret` to the frontend  
 
@@ -344,14 +437,14 @@ Then:
 
 ## Frontend payment flow
 
-On form submit:
+On checkout form submit:
 
 1. Validate customer details  
 2. Call `/api/create-payment-intent`  
 3. Use Stripe Elements to confirm card payment  
 4. On success:
-   - Show success screen or message  
-   - Clear cart / checkout state  
+   - Show success message or screen  
+   - Clear cart and checkout state  
 
 No webhooks required for this task.
 
@@ -373,22 +466,16 @@ State management is up to you:
 
 ---
 
-# Deliverables
+# Acceptance Checklist — Checkout
 
-- Reusable carousel component using `products` data  
-- Membership plans page that uses the carousel  
-- Global navbar with cart  
-- `/checkout` page with:
-  - Membership summary  
-  - Customer details form  
-  - Stripe card input  
-- Stripe fully integrated via API routes  
-- README notes explaining:
-  - How to run the project  
-  - How to set up Stripe keys  
-  - Where main components live  
+- [ ] Customer form exists and validates  
+- [ ] Membership summary matches cart  
+- [ ] Stripe Elements used for card input  
+- [ ] Next.js API creates PaymentIntent  
+- [ ] Real Stripe payment works end-to-end  
+- [ ] Success state shown after payment  
+- [ ] Cart state cleared after success  
 
----
 
 # Acceptance Checklist
 
@@ -402,17 +489,92 @@ State management is up to you:
 - [ ] “Your Savings” uses `product.totalMonthlySavings`  
 - [ ] Monthly/Annual toggle is interactive  
 - [ ] Currency formatting is correct  
-- [ ] Clicking “Purchase Membership” navigates to `/checkout`  
+- [ ] Clicking “Purchase Membership” navigates to `/cart`  
 
-## Cart / Checkout
+---
 
-- [ ] `/checkout` route exists  
+## Cart Page (`/cart`)
+
 - [ ] Selected plan persists from plans page  
-- [ ] Cart summary matches selection  
+- [ ] Displays selected plan name and billing type  
+- [ ] Base price (ex GST) displayed correctly  
+- [ ] GST (10%) calculated correctly  
+- [ ] Final total to pay today is correct  
+- [ ] Proceed button disabled until Terms are accepted  
+- [ ] Clicking “Proceed to Checkout” navigates to `/checkout`  
+
+---
+
+## Checkout Page (`/checkout`)
+
+- [ ] Customer details form exists and is controlled  
+- [ ] Required fields are validated  
+- [ ] Membership summary matches cart  
 - [ ] GST and totals calculated correctly  
-- [ ] Customer form exists and is controlled  
 - [ ] Stripe Elements used for card input  
 - [ ] Next.js API route creates PaymentIntent  
-- [ ] Payment confirmation works end-to-end  
+- [ ] Real Stripe payment works end-to-end  
 - [ ] Success state shown after payment  
+- [ ] Cart / checkout state cleared after success  
 
+---
+
+## Global State & Navigation
+
+- [ ] Global navbar exists on all pages  
+- [ ] Cart visible in navbar  
+- [ ] Cart displays correct selected price  
+- [ ] Cart state persists across page navigation  
+- [ ] Cart state, checkout state, and carousel state all stay in sync  
+
+
+# Submission
+
+To complete this task, you must deploy a working version of the application and provide a live link.
+
+---
+
+## Requirements
+
+1. Push the full project to **your own GitHub repository**
+2. Create a new project on **your own Vercel account**
+3. Deploy the project to Vercel
+4. Ensure the application works in the **production environment**
+
+---
+
+## Testing requirements
+
+You must successfully test **all three membership products** in production:
+
+- Bronze Membership  
+- Silver Membership  
+- Gold Membership  
+
+For each product:
+
+- Select the membership on the plans page  
+- Proceed through cart and checkout  
+- Complete a Stripe payment using test keys  
+- Reach the success state
+- Redirect the user to the /plans page after payment is completed
+
+All three products must complete the full flow successfully.
+
+---
+
+## Submission
+
+Submit the following:
+
+- Public GitHub repository link  
+- Live Vercel deployment URL  
+
+The Vercel link should allow:
+
+- Browsing plans  
+- Adding to cart  
+- Completing checkout  
+- Making Stripe test payments end-to-end  
+
+No local or development-only links will be accepted.
